@@ -4,19 +4,13 @@ require 'font_assets/mime_types'
 module FontAssets
   class Middleware
 
-    def initialize(app, origin)
+    def initialize(app)
       @app = app
-      @origin = origin
       @mime_types = FontAssets::MimeTypes.new(Rack::Mime::MIME_TYPES)
     end
 
     def access_control_headers
-      {
-        "Access-Control-Allow-Origin" => @origin,
-        "Access-Control-Allow-Methods" => "GET",
-        "Access-Control-Allow-Headers" => "x-requested-with",
-        "Access-Control-Max-Age" => "3628800"
-      }
+      { "Access-Control-Allow-Origin" => "*" }
     end
 
     def call(env)
@@ -35,7 +29,7 @@ module FontAssets
 
 
     def extension(path)
-      "." + path.split("?").first.split(".").last
+      "." + path.split("?").first.split(".").last rescue ""
     end
 
     def font_asset?(path)

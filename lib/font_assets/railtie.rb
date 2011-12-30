@@ -5,9 +5,15 @@ module FontAssets
     config.font_assets = ActiveSupport::OrderedOptions.new
 
     initializer "font_assets.configure_rails_initialization" do |app|
-      config.font_assets.origin ||= "*"
-
-      app.middleware.insert_before 'ActionDispatch::Static', FontAssets::Middleware, config.font_assets.origin
+      app.middleware.insert_before 'ActionDispatch::Static', FontAssets::Middleware
+    end
+    config.after_initialize do
+      Rack::Mime::MIME_TYPES.merge!(
+        '.woff' => 'application/x-font-woff',
+        '.ttf'  => 'application/x-font-ttf',
+        '.eot'  => 'application/vnd.ms-fontobject',
+        '.svg'  => 'image/svg+xml'
+      )
     end
   end
 end
